@@ -254,6 +254,7 @@ VALUES
 INSERT INTO enrollments (student_id, course_id, session_year) VALUES
 (1, 1, '2025-26'),
 (2, 2, '2025-26');
+-- you have to add more data by yourself
 
 INSERT INTO marks (student_id, course_id, marks) VALUES
 (1, 1, 86),
