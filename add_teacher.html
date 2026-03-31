@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Add New Teacher</h2>
+<form method="POST" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" placeholder="Enter email address" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" class="form-control" placeholder="Enter phone number">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Department</label>
+        <select name="department_id" class="form-select" title="Department" required>
+            {% for dept in departments %}
+                <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Designation</label>
+        <input type="text" name="designation" class="form-control" placeholder="Enter designation" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Qualification</label>
+        <input type="text" name="qualification" class="form-control" placeholder="Enter qualification">
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary btn-lg">Add Teacher</button>
+    </div>
+</form>
+{% endblock %}

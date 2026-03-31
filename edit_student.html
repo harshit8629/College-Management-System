@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Student</h2>
+<form method="POST" class="row g-3">
+    <!-- Same fields as add_student.html but with value="{{ student.field }}" -->
+    <div class="col-md-6">
+        <label class="form-label">Roll No</label>
+        <input type="text" name="roll_no" value="{{ student.roll_no }}" class="form-control" placeholder="Enter roll number" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="name" value="{{ student.name }}" class="form-control" placeholder="Enter full name" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" value="{{ student.email }}" class="form-control" placeholder="Enter email address" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" value="{{ student.phone }}" class="form-control" placeholder="Enter phone number">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Gender</label>
+        <select name="gender" class="form-select" title="Select student gender">
+            <option value="Male" {% if student.gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if student.gender == 'Female' %}selected{% endif %}>Female</option>
+            <option value="Other" {% if student.gender == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Date of Birth</label>
+        <input type="date" name="date_of_birth" value="{{ student.date_of_birth }}" class="form-control" title="Select student date of birth">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Semester</label>
+        <input type="number" name="semester" value="{{ student.semester }}" class="form-control" placeholder="Enter semester" required>
+    </div>
+    <div class="col-md-12">
+        <label class="form-label">Department</label>
+        <select name="department_id" class="form-select" title="Select student department">
+            {% for dept in departments %}
+            <option value="{{ dept.department_id }}" {% if dept.department_id == student.department_id %}selected{% endif %}>{{ dept.department_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-12">
+        <label class="form-label">Address</label>
+        <textarea name="address" class="form-control" rows="3" title="Enter student address">{{ student.address }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg">Update Student</button>
+</form>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h2>Department Management</h2>
+    <a href="{{ url_for('add_department') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Add New Department
+    </a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Department Name</th>
+            <th>HOD Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dept in departments %}
+        <tr>
+            <td>{{ dept.department_name }}</td>
+            <td>{{ dept.hod_name }}</td>
+            <td>
+                <a href="{{ url_for('edit_department', department_id=dept.department_id) }}" 
+                   class="btn btn-sm btn-warning">Edit</a>
+                <a href="{{ url_for('delete_department', department_id=dept.department_id) }}" 
+                   class="btn btn-sm btn-danger" 
+                   onclick="return confirm('Delete this department?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

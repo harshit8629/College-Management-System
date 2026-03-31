@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Teacher</h2>
+<form method="POST" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="name" value="{{ teacher.name }}" class="form-control" title="Full Name" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" value="{{ teacher.email }}" class="form-control" title="Email" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" value="{{ teacher.phone }}" class="form-control" title="Phone">
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Department</label>
+        <select name="department_id" class="form-select" title="Department" required>
+            {% for dept in departments %}
+                <option value="{{ dept.department_id }}" 
+                        {% if dept.department_id == teacher.department_id %}selected{% endif %}>
+                    {{ dept.department_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Designation</label>
+        <input type="text" name="designation" value="{{ teacher.designation }}" class="form-control" title="Designation" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Qualification</label>
+        <input type="text" name="qualification" value="{{ teacher.qualification }}" class="form-control" title="Qualification">
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary btn-lg">Update Teacher</button>
+    </div>
+</form>
+{% endblock %}

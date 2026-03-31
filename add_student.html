@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Add New Student</h2>
+<form method="POST" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Roll No</label>
+        <input type="text" name="roll_no" class="form-control" title="Enter student's roll number" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="name" class="form-control" title="Enter student's full name" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" title="Enter student's email address" required>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" class="form-control" title="Enter student's phone number">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Gender</label>
+        <select name="gender" class="form-select" title="Select your gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Date of Birth</label>
+        <input type="date" name="date_of_birth" class="form-control" title="Select your date of birth">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Semester</label>
+        <input type="number" name="semester" class="form-control" title="Enter semester number" required>
+    </div>
+    <div class="col-md-12">
+        <label class="form-label">Department</label>
+        <select name="department_id" class="form-select" title="Select your department" required>
+            {% for dept in departments %}
+            <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-12">
+        <label class="form-label">Address</label>
+        <textarea name="address" class="form-control" rows="3" title="Enter your address"></textarea>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary btn-lg">Add Student</button>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Fee Record</h2>
+<form method="POST" class="row g-3">
+    <input type="hidden" name="fee_id" value="{{ fee.fee_id }}">
+
+    <div class="col-md-4">
+        <label class="form-label">Student</label>
+        <select name="student_id" class="form-select" title="Select the student" required>
+            {% for s in students %}
+            <option value="{{ s.student_id }}" {% if s.student_id == fee.student_id %}selected{% endif %}>
+                {{ s.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Total Fee</label>
+        <input type="number" name="total_fee" value="{{ fee.total_fee }}" class="form-control" title="Enter the total fee amount" required>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Paid Amount</label>
+        <input type="number" name="paid_amount" value="{{ fee.paid_amount }}" class="form-control" title="Enter the amount paid" required>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Payment Date</label>
+        <input type="date" name="payment_date" value="{{ fee.payment_date }}" class="form-control" title="Enter the payment date">
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary btn-lg">Update Fee</button>
+        <a href="{{ url_for('fees') }}" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+</form>
+{% endblock %}
