@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Fees{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-amber"><i class="bi bi-cash-coin"></i></span>
+        Fee Management
+    </h1>
+</div>
+
+<!-- Add Fee Form -->
+<div class="card mb-4">
+    <div class="card-header d-flex align-items-center gap-2 py-3">
+        <i class="bi bi-plus-square-fill" style="color:var(--clr-success);"></i>
+        <span class="fw-bold">Add New Fee Record</span>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Student <span class="text-danger">*</span></label>
+                <select name="student_id" class="form-select" required>
+                    <option value="">Select Student</option>
+                    {% for s in students %}
+                    <option value="{{ s.student_id }}">{{ s.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Total Fee (₹) <span class="text-danger">*</span></label>
+                <input type="number" name="total_fee" class="form-control" placeholder="e.g. 50000" min="0" step="0.01" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Paid Amount (₹) <span class="text-danger">*</span></label>
+                <input type="number" name="paid_amount" class="form-control" placeholder="e.g. 25000" min="0" step="0.01" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Payment Date</label>
+                <input type="date" name="payment_date" class="form-control">
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-success w-100 py-2" title="Add">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Fees Table -->
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between py-3">
+        <span class="d-flex align-items-center gap-2">
+            <i class="bi bi-wallet2" style="color:var(--clr-warning);"></i>
+            <span class="fw-bold">All Fee Records</span>
+        </span>
+        <span class="badge" style="background:rgba(245,158,11,0.2);color:var(--clr-warning);">
+            {{ fees|length }} record{{ 's' if fees|length != 1 }}
+        </span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Student</th>
+                        <th>Total Fee</th>
+                        <th>Paid</th>
+                        <th>Due</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in fees %}
+                    <tr>
+                        <td class="ps-4 fw-medium">{{ f.student_name }}</td>
+                        <td>₹{{ "%.0f"|format(f.total_fee) }}</td>
+                        <td style="color:var(--clr-success);">₹{{ "%.0f"|format(f.paid_amount) }}</td>
+                        <td style="color:{% if f.due_amount > 0 %}var(--clr-danger){% else %}var(--clr-success){% endif %};">
+                            ₹{{ "%.0f"|format(f.due_amount) }}
+                        </td>
+                        <td>
+                            <span class="badge {% if f.status == 'Paid' %}bg-success{% elif f.status == 'Partial' %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ f.status }}
+                            </span>
+                        </td>
+                        <td style="color:var(--clr-muted);">{{ f.payment_date or '—' }}</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('edit_fee', fee_id=f.fee_id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{{ url_for('delete_fee', fee_id=f.fee_id) }}"
+                                   class="btn btn-sm btn-danger" title="Delete"
+                                   onclick="return confirm('Delete this fee record?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5" style="color:var(--clr-muted);">
+                            <i class="bi bi-wallet2 fs-1 d-block mb-2" style="opacity:0.3;"></i>
+                            No fee records yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

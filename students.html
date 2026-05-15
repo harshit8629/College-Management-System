@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Students{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-teal"><i class="bi bi-people-fill"></i></span>
+        Student Management
+    </h1>
+    <a href="{{ url_for('add_student') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle me-1"></i> Add New Student
+    </a>
+</div>
+
+<!-- Search -->
+<form method="get" class="mb-4">
+    <div class="d-flex gap-2">
+        <div class="flex-grow-1 position-relative">
+            <i class="bi bi-search position-absolute" style="left:14px;top:50%;transform:translateY(-50%);color:var(--clr-muted);z-index:1;"></i>
+            <input type="text" name="search" class="form-control" style="padding-left:40px !important;"
+                   placeholder="Search by name, roll no, or email..." value="{{ search }}">
+        </div>
+        <button type="submit" class="btn btn-primary px-4">Search</button>
+        {% if search %}
+        <a href="{{ url_for('students') }}" class="btn btn-outline-primary px-3">Clear</a>
+        {% endif %}
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Roll No</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Department</th>
+                        <th>Sem</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td class="ps-4">
+                            <span class="badge" style="background:rgba(124,58,237,0.2);color:var(--clr-primary);">{{ student.roll_no }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--clr-primary),var(--clr-accent));display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#fff;flex-shrink:0;">
+                                    {{ student.name[0]|upper }}
+                                </div>
+                                <span class="fw-medium">{{ student.name }}</span>
+                            </div>
+                        </td>
+                        <td style="color:var(--clr-muted);">{{ student.email }}</td>
+                        <td style="color:var(--clr-muted);">{{ student.phone or '—' }}</td>
+                        <td>
+                            <span class="badge" style="background:rgba(6,182,212,0.15);color:var(--clr-accent);">
+                                {{ student.department_name or 'N/A' }}
+                            </span>
+                        </td>
+                        <td style="color:var(--clr-muted);">{{ student.semester }}</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('report_card', student_id=student.student_id) }}" class="btn btn-sm btn-info" title="Report Card">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </a>
+                                <a href="{{ url_for('edit_student', student_id=student.student_id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{{ url_for('delete_student', student_id=student.student_id) }}"
+                                   class="btn btn-sm btn-danger" title="Delete"
+                                   onclick="return confirm('Delete student {{ student.name }}? This cannot be undone.')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5" style="color:var(--clr-muted);">
+                            <i class="bi bi-people fs-1 d-block mb-2" style="opacity:0.3;"></i>
+                            {% if search %}No students found matching "{{ search }}".{% else %}No students yet. Add your first student!{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if students %}
+    <div class="card-footer" style="background:rgba(255,255,255,0.03);border-top:1px solid var(--clr-border);padding:12px 20px;">
+        <small style="color:var(--clr-muted);">Showing {{ students|length }} student{{ 's' if students|length != 1 }}</small>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

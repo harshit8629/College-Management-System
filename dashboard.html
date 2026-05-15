@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-violet"><i class="bi bi-speedometer2"></i></span>
+        Overview Dashboard
+    </h1>
+    <span class="badge px-3 py-2" style="background:rgba(124,58,237,0.2);color:var(--clr-primary);border:1px solid rgba(124,58,237,0.4);">
+        <i class="bi bi-calendar3 me-1"></i>
+        <span id="dash-date"></span>
+    </span>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    {% set stats = [
+        ('students',    'Total Students',  'bi-people-fill',     'icon-violet', totals.get('students',0)),
+        ('teachers',    'Faculty Members', 'bi-person-video3',   'icon-blue',   totals.get('teachers',0)),
+        ('departments', 'Departments',     'bi-diagram-3-fill',  'icon-pink',   totals.get('departments',0)),
+        ('courses',     'Courses',         'bi-book-fill',       'icon-amber',  totals.get('courses',0)),
+        ('enrollments', 'Enrollments',     'bi-journal-check',   'icon-green',  totals.get('enrollments',0)),
+        ('fees',        'Fee Records',     'bi-cash-coin',       'icon-teal',   totals.get('fees',0)),
+    ] %}
+    {% for key, name, icon, cls, val in stats %}
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card">
+            <div class="stat-icon {{ cls }}"><i class="bi {{ icon }}"></i></div>
+            <div>
+                <div class="stat-value counter" data-target="{{ val }}">0</div>
+                <div class="stat-label">{{ name }}</div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Quick Actions -->
+<div class="card mb-4">
+    <div class="card-header d-flex align-items-center gap-2 py-3">
+        <i class="bi bi-lightning-charge-fill" style="color:var(--clr-warning);"></i>
+        <span class="fw-bold">Quick Actions</span>
+    </div>
+    <div class="card-body p-4">
+        <div class="quick-action-grid">
+            <a href="{{ url_for('add_student') }}" class="quick-action-btn">
+                <div class="action-icon icon-violet"><i class="bi bi-person-plus-fill"></i></div>
+                Add Student
+            </a>
+            <a href="{{ url_for('add_teacher') }}" class="quick-action-btn">
+                <div class="action-icon icon-blue"><i class="bi bi-person-workspace"></i></div>
+                Add Teacher
+            </a>
+            <a href="{{ url_for('add_course') }}" class="quick-action-btn">
+                <div class="action-icon icon-amber"><i class="bi bi-journal-plus"></i></div>
+                Add Course
+            </a>
+            <a href="{{ url_for('add_department') }}" class="quick-action-btn">
+                <div class="action-icon icon-pink"><i class="bi bi-building-add"></i></div>
+                Add Dept.
+            </a>
+            <a href="{{ url_for('marks') }}" class="quick-action-btn">
+                <div class="action-icon icon-green"><i class="bi bi-bar-chart-line-fill"></i></div>
+                Manage Marks
+            </a>
+            <a href="{{ url_for('report_card') }}" class="quick-action-btn">
+                <div class="action-icon" style="background:linear-gradient(135deg,#f472b6,#7c3aed);color:#fff;">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                </div>
+                Report Card
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Row -->
+<div class="row g-4">
+    <!-- Recent Students -->
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between py-3">
+                <span class="d-flex align-items-center gap-2">
+                    <i class="bi bi-people-fill" style="color:var(--clr-accent);"></i>
+                    <span class="fw-bold">Recent Students</span>
+                </span>
+                <a href="{{ url_for('students') }}" class="btn btn-outline-primary btn-sm">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Roll No</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in recent_students %}
+                        <tr>
+                            <td class="ps-4">
+                                <span class="badge" style="background:rgba(124,58,237,0.2);color:var(--clr-primary);">{{ s.roll_no }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--clr-primary),var(--clr-accent));display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#fff;flex-shrink:0;">
+                                        {{ s.name[0]|upper }}
+                                    </div>
+                                    {{ s.name }}
+                                </div>
+                            </td>
+                            <td style="color:var(--clr-muted);">{{ s.department_name or 'N/A' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center py-4" style="color:var(--clr-muted);">No students yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Overview -->
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2 py-3">
+                <i class="bi bi-activity" style="color:var(--clr-success);"></i>
+                <span class="fw-bold">System Overview</span>
+            </div>
+            <div class="card-body p-4">
+                {% set metrics = [
+                    ('Enrollment Rate', totals.get('enrollments',0), totals.get('students',1)|int or 1, 'var(--clr-primary)'),
+                    ('Fee Collection',  totals.get('fees',0),        totals.get('students',1)|int or 1, 'var(--clr-success)'),
+                    ('Course Coverage', totals.get('courses',0),     20,                                'var(--clr-accent)'),
+                ] %}
+                {% for label, num, denom, color in metrics %}
+                {% set pct = [[((num / denom) * 100)|round|int, 100]|min, 0]|max %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span style="font-size:0.82rem;color:var(--clr-muted);">{{ label }}</span>
+                        <span style="font-size:0.82rem;font-weight:700;">{{ pct }}%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" style="width:{{ pct }}%;background:{{ color }} !important;" role="progressbar"></div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <hr style="border-color:var(--clr-border);">
+
+                <div class="row g-3 mt-1">
+                    <div class="col-6">
+                        <div class="glass-box p-3 text-center rounded-3">
+                            <div style="font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;">{{ totals.get('students',0) }}</div>
+                            <div style="font-size:0.75rem;color:var(--clr-muted);">Active Students</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="glass-box p-3 text-center rounded-3">
+                            <div style="font-size:1.5rem;font-weight:700;font-family:'Outfit',sans-serif;">{{ totals.get('courses',0) }}</div>
+                            <div style="font-size:0.75rem;color:var(--clr-muted);">Offered Courses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('dash-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+document.querySelectorAll('.counter').forEach(el => {
+    const target = parseInt(el.dataset.target) || 0;
+    if (!target) { el.textContent = '0'; return; }
+    let cur = 0;
+    const step = Math.max(1, Math.ceil(target / 40));
+    const t = setInterval(() => { cur = Math.min(cur + step, target); el.textContent = cur; if (cur >= target) clearInterval(t); }, 30);
+});
+</script>
+{% endblock %}

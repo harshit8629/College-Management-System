@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Edit Fee{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-amber"><i class="bi bi-pencil-square"></i></span>
+        Edit Fee Record
+    </h1>
+    <a href="{{ url_for('fees') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Fees
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+        <form method="POST" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Student <span class="text-danger">*</span></label>
+                <select name="student_id" class="form-select" required>
+                    {% for s in students %}
+                    <option value="{{ s.student_id }}" {% if s.student_id == fee.student_id %}selected{% endif %}>
+                        {{ s.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Total Fee (₹) <span class="text-danger">*</span></label>
+                <input type="number" name="total_fee" value="{{ fee.total_fee }}" class="form-control" min="0" step="0.01" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Paid Amount (₹) <span class="text-danger">*</span></label>
+                <input type="number" name="paid_amount" value="{{ fee.paid_amount }}" class="form-control" min="0" step="0.01" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Payment Date</label>
+                <input type="date" name="payment_date" value="{{ fee.payment_date or '' }}" class="form-control">
+            </div>
+
+            <!-- Show current due amount (read-only info) -->
+            <div class="col-12">
+                <div class="glass-box p-3 rounded-3 d-flex align-items-center gap-4">
+                    <div>
+                        <div style="font-size:0.7rem;text-transform:uppercase;color:var(--clr-muted);font-weight:700;">Current Status</div>
+                        <span class="badge {% if fee.status == 'Paid' %}bg-success{% elif fee.status == 'Partial' %}bg-warning{% else %}bg-danger{% endif %} mt-1">{{ fee.status }}</span>
+                    </div>
+                    <div>
+                        <div style="font-size:0.7rem;text-transform:uppercase;color:var(--clr-muted);font-weight:700;">Current Due</div>
+                        <div style="font-weight:700;color:{% if fee.due_amount > 0 %}var(--clr-danger){% else %}var(--clr-success){% endif %};">₹{{ "%.0f"|format(fee.due_amount) }}</div>
+                    </div>
+                    <div style="color:var(--clr-muted);font-size:0.82rem;">
+                        <i class="bi bi-info-circle me-1"></i>Status and due amount will be recalculated automatically on save.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-check-circle me-1"></i>Update Fee
+                </button>
+                <a href="{{ url_for('fees') }}" class="btn btn-outline-primary btn-lg px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

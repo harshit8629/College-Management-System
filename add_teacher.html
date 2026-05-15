@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Add Teacher{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-blue"><i class="bi bi-person-plus-fill"></i></span>
+        Add New Teacher
+    </h1>
+    <a href="{{ url_for('teachers') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Teachers
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+        <form method="POST" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email <span class="text-danger">*</span></label>
+                <input type="email" name="email" class="form-control" placeholder="teacher@college.edu" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" placeholder="10-digit mobile number">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Department <span class="text-danger">*</span></label>
+                <select name="department_id" class="form-select" required>
+                    <option value="">Select Department</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Designation <span class="text-danger">*</span></label>
+                <input type="text" name="designation" class="form-control" placeholder="e.g. Professor, Lecturer" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Qualification</label>
+                <input type="text" name="qualification" class="form-control" placeholder="e.g. PhD Computer Science">
+            </div>
+            <div class="col-12 d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-check-circle me-1"></i>Add Teacher
+                </button>
+                <a href="{{ url_for('teachers') }}" class="btn btn-outline-primary btn-lg px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

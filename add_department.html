@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Add Department{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-pink"><i class="bi bi-building-add"></i></span>
+        Add New Department
+    </h1>
+    <a href="{{ url_for('departments') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Departments
+    </a>
+</div>
+
+<div class="card" style="max-width:600px;">
+    <div class="card-body p-4">
+        <form method="POST" class="row g-3">
+            <div class="col-12">
+                <label class="form-label">Department Name <span class="text-danger">*</span></label>
+                <input type="text" name="department_name" class="form-control" placeholder="e.g. Computer Science" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Head of Department (HOD)</label>
+                <input type="text" name="hod_name" class="form-control" placeholder="e.g. Dr. Rajesh Sharma">
+            </div>
+            <div class="col-12 d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-check-circle me-1"></i>Add Department
+                </button>
+                <a href="{{ url_for('departments') }}" class="btn btn-outline-primary btn-lg px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

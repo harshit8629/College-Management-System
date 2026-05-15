@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Marks{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-green"><i class="bi bi-bar-chart-fill"></i></span>
+        Marks Management
+    </h1>
+</div>
+
+<!-- Add/Update Marks Form -->
+<div class="card mb-4">
+    <div class="card-header d-flex align-items-center gap-2 py-3">
+        <i class="bi bi-plus-square-fill" style="color:var(--clr-primary);"></i>
+        <span class="fw-bold">Add / Update Marks</span>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST" class="row g-3" id="marks-form">
+            <div class="col-md-4">
+                <label class="form-label">Student <span class="text-danger">*</span></label>
+                <select name="student_id" class="form-select" required>
+                    <option value="">Select Student</option>
+                    {% for s in students %}
+                    <option value="{{ s.student_id }}">{{ s.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Course <span class="text-danger">*</span></label>
+                <select name="course_id" class="form-select" id="course_select" onchange="toggleOther(this.value)" required>
+                    <option value="">Select Course</option>
+                    {% for c in courses %}
+                    <option value="{{ c.course_id }}">{{ c.course_name }} ({{ c.course_code }})</option>
+                    {% endfor %}
+                    <option value="other" style="color:var(--clr-primary);font-weight:600;">+ Add New Subject</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Marks (0–100) <span class="text-danger">*</span></label>
+                <input type="number" name="marks" class="form-control" placeholder="e.g. 85" min="0" max="100" required>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100 py-2" title="Save">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </div>
+
+            <!-- New Subject Fields (hidden by default) -->
+            <div id="other-fields" class="col-12 row g-3" style="display:none !important;">
+                <div class="col-md-6">
+                    <label class="form-label">New Subject Name <span class="text-danger">*</span></label>
+                    <input type="text" id="other_course_name" name="other_course_name" class="form-control" placeholder="e.g. Artificial Intelligence">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Course Code <span class="text-danger">*</span></label>
+                    <input type="text" id="other_course_code" name="other_course_code" class="form-control" placeholder="e.g. AI501">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Marks Table -->
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between py-3">
+        <span class="d-flex align-items-center gap-2">
+            <i class="bi bi-bar-chart-line-fill" style="color:var(--clr-success);"></i>
+            <span class="fw-bold">All Marks Records</span>
+        </span>
+        <span class="badge" style="background:rgba(16,185,129,0.2);color:var(--clr-success);">
+            {{ marks|length }} record{{ 's' if marks|length != 1 }}
+        </span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Student</th>
+                        <th>Course</th>
+                        <th>Marks</th>
+                        <th>Grade</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in marks %}
+                    <tr>
+                        <td class="ps-4 fw-medium">{{ m.student_name }}</td>
+                        <td style="color:var(--clr-muted);">{{ m.course_name }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress" style="width:70px;height:6px !important;">
+                                    <div class="progress-bar" style="width:{{ m.marks }}%;" role="progressbar"></div>
+                                </div>
+                                <span class="fw-bold" style="font-size:0.88rem;">{{ m.marks }}<span style="color:var(--clr-muted);font-weight:400;">/100</span></span>
+                            </div>
+                        </td>
+                        <td>
+                            {% set gc = 'bg-success' if m.grade in ['A+','A'] else ('bg-danger' if m.grade == 'F' else ('bg-info' if m.grade == 'B' else 'bg-warning')) %}
+                            <span class="badge {{ gc }}">{{ m.grade }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('delete_marks', mark_id=m.mark_id) }}"
+                               class="btn btn-sm btn-danger" title="Delete"
+                               onclick="return confirm('Delete marks for {{ m.student_name }} in {{ m.course_name }}?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5" style="color:var(--clr-muted);">
+                            <i class="bi bi-bar-chart fs-1 d-block mb-2" style="opacity:0.3;"></i>
+                            No marks recorded yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function toggleOther(val) {
+    const div  = document.getElementById('other-fields');
+    const name = document.getElementById('other_course_name');
+    const code = document.getElementById('other_course_code');
+    if (val === 'other') {
+        div.style.setProperty('display', 'flex', 'important');
+        name.setAttribute('required', '');
+        code.setAttribute('required', '');
+    } else {
+        div.style.setProperty('display', 'none', 'important');
+        name.removeAttribute('required');
+        code.removeAttribute('required');
+    }
+}
+</script>
+{% endblock %}

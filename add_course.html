@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Add Course{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-amber"><i class="bi bi-journal-plus"></i></span>
+        Add New Course
+    </h1>
+    <a href="{{ url_for('courses') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Courses
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+        <form method="POST" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Course Code <span class="text-danger">*</span></label>
+                <input type="text" name="course_code" class="form-control" placeholder="e.g. CS101" required>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label">Course Name <span class="text-danger">*</span></label>
+                <input type="text" name="course_name" class="form-control" placeholder="e.g. Introduction to Programming" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Credits <span class="text-danger">*</span></label>
+                <input type="number" name="credits" class="form-control" placeholder="e.g. 4" min="1" max="6" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Semester <span class="text-danger">*</span></label>
+                <input type="number" name="semester" class="form-control" placeholder="e.g. 1" min="1" max="8" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Department <span class="text-danger">*</span></label>
+                <select name="department_id" class="form-select" required>
+                    <option value="">Select Department</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.department_id }}">{{ dept.department_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12 d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-check-circle me-1"></i>Add Course
+                </button>
+                <a href="{{ url_for('courses') }}" class="btn btn-outline-primary btn-lg px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

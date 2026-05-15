@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block topbar_title %}Departments{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="title-icon icon-pink"><i class="bi bi-diagram-3-fill"></i></span>
+        Department Management
+    </h1>
+    <a href="{{ url_for('add_department') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle me-1"></i> Add New Department
+    </a>
+</div>
+
+<div class="row g-4">
+    {% for dept in departments %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="icon-pink" style="width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold" style="font-size:1rem;">{{ dept.department_name }}</h5>
+                        <span style="font-size:0.75rem;color:var(--clr-muted);">Department</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mb-4" style="color:var(--clr-muted);font-size:0.85rem;">
+                    <i class="bi bi-person-badge"></i>
+                    <span>HOD: <strong style="color:var(--clr-text);">{{ dept.hod_name or 'Not Assigned' }}</strong></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('edit_department', department_id=dept.department_id) }}"
+                       class="btn btn-sm btn-warning flex-grow-1">
+                        <i class="bi bi-pencil-square me-1"></i>Edit
+                    </a>
+                    <a href="{{ url_for('delete_department', department_id=dept.department_id) }}"
+                       class="btn btn-sm btn-danger flex-grow-1"
+                       onclick="return confirm('Delete department {{ dept.department_name }}? Students in this department will be unassigned.')">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5" style="color:var(--clr-muted);">
+        <i class="bi bi-diagram-3 fs-1 d-block mb-2" style="opacity:0.3;"></i>
+        No departments found. Add your first department!
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
